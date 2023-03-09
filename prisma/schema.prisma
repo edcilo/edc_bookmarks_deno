@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["deno"]
+  output = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Bookmark {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(120)
+  url         String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  category_id String   @db.VarChar(32)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Category    Category @relation(fields: [category_id], references: [id])
+}
+
+model Category {
+  id         String     @id @default(uuid())
+  name       String     @db.VarChar(60)
+  section_id String     @db.VarChar(32)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  Bookmark   Bookmark[]
+
+  Section    Section    @relation(fields: [section_id], references: [id])
+}
+
+model Section {
+  id           String     @id @default(uuid())
+  name         String     @db.VarChar(60)
+  workspace_id String     @db.VarChar(32)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  Category     Category[]
+
+  Workspace    Workspace  @relation(fields: [workspace_id], references: [id])
+}
+
+model Workspace {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(60)
+  user_id   String    @db.VarChar(32)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  Section   Section[]
+}
