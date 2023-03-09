@@ -14,7 +14,7 @@ model Bookmark {
   name        String   @db.VarChar(120)
   url         String   @db.VarChar(255)
   description String   @db.VarChar(255)
-  category_id String   @db.VarChar(32)
+  category_id String   @db.VarChar(36)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -24,7 +24,7 @@ model Bookmark {
 model Category {
   id         String     @id @default(uuid())
   name       String     @db.VarChar(60)
-  section_id String     @db.VarChar(32)
+  section_id String     @db.VarChar(36)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 
@@ -36,7 +36,7 @@ model Category {
 model Section {
   id           String     @id @default(uuid())
   name         String     @db.VarChar(60)
-  workspace_id String     @db.VarChar(32)
+  workspace_id String     @db.VarChar(36)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -48,7 +48,7 @@ model Section {
 model Workspace {
   id        String    @id @default(uuid())
   name      String    @db.VarChar(60)
-  user_id   String    @db.VarChar(32)
+  user_id   String    @db.VarChar(36)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

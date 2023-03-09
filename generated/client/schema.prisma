@@ -48,7 +48,7 @@ model Section {
 model Workspace {
   id        String    @id @default(uuid())
   name      String    @db.VarChar(60)
-  user_id   String    @db.VarChar(32)
+  user_id   String    @db.VarChar(36)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

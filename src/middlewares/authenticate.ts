@@ -14,7 +14,7 @@ export const authenticateMiddleware: RouterMiddleware<string> = async (
     // TODO: validate token
 
     // TODO: get user from database
-    state.user = { id: 1, name: 'John Doe' };
+    state.user = { id: "f07d329a-4564-44a7-941a-77a708b4f592", name: 'John Doe' };
 
     console.log('authenticate request');
     await next();

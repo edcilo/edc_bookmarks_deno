@@ -1,37 +1,41 @@
+import Repository from "./repository.ts";
+
 interface IWorkspaceCreate {
     name: string;
+    user_id: string;
 }
 
-export class WorkspaceRepository {
-    public getAll(page: number) {
+export class WorkspaceRepository extends Repository {
+    public async getAll(page: number) {
         return {
-            data: [], 
+            data: await this.client().workspace.findMany(),
             pagination: {
                 page,
             }
         };
     }
 
-    public create(data: IWorkspaceCreate) {
-        return data;
+    public async create({ name, user_id }: IWorkspaceCreate) {
+        return await this.client().workspace.create({
+            data: { name, user_id },
+        });
     }
 
-    public get(id: string) {
-        return {
-            id,
-        };
+    public async get(id: string) {
+        return await this.client().workspace.findUnique({
+            where: { id },
+        });
     }
 
-    public update(id: string, data: IWorkspaceCreate) {
-        return {
-            id,
-            ...data,
-        };
+    public async update(id: string, data: IWorkspaceCreate) {
+        return await this.client().workspace.update({
+            where: { id }, data,
+        })
     }
 
-    public delete(id: string) {
-        return {
-            id,
-        };
+    public async delete(id: string) {
+        return await this.client().workspace.delete({
+            where: { id },
+        });
     }
 }
