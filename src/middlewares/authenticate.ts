@@ -1,4 +1,5 @@
 import { RouterMiddleware } from "https://deno.land/x/oak@v12.1.0/mod.ts";
+import { unauthorizedResponse } from "/common/index.ts";
 
 export const authenticateMiddleware: RouterMiddleware<string> = async (
   { state, request, response },
@@ -8,6 +9,7 @@ export const authenticateMiddleware: RouterMiddleware<string> = async (
 
   if (!authorization) {
     response.status = 401;
+    response.body = unauthorizedResponse;
     return;
   }
 

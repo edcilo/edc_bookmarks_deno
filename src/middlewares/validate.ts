@@ -1,4 +1,5 @@
 import { RouterContext } from "https://deno.land/x/oak@v12.1.0/mod.ts";
+import { badRequestResponse } from "/common/index.ts";
 import { TValidation } from "/validations/index.ts";
 
 interface IQueryParams {
@@ -25,8 +26,9 @@ export const validateMiddleware = async (
   const { error } = schema(ctx).validate(data);
 
   if (error) {
+    badRequestResponse.errors = error.details;
     response.status = 400;
-    response.body = error.details;
+    response.body = badRequestResponse;
   } else {
     await next();
   }
