@@ -5,7 +5,10 @@ import {
   authorizeMiddleware,
   validateMiddleware,
 } from "/middlewares/index.ts";
-import { workspaceCreateValidation } from "/validations/index.ts";
+import {
+  workspaceCreateValidation,
+  workspacePaginateValidation,
+} from "/validations/index.ts";
 
 const prefix = "/api/v1/workspaces";
 const controller = new WorkspaceController();
@@ -15,6 +18,8 @@ export const workspaces = new Router({ prefix })
     "/",
     authenticateMiddleware,
     (ctx, next) => authorizeMiddleware(ctx, next, "read:workspaces"),
+    (ctx, next) =>
+      validateMiddleware(ctx, next, workspacePaginateValidation, "query"),
     controller.getAll,
   )
   .post(

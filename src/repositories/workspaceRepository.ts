@@ -1,21 +1,30 @@
 import Repository from "./repository.ts";
+import { paginationResponse } from "/common/index.ts";
+import { TOrder, TOrderBy } from "/types/index.ts";
 
-interface IWorkspaceCreate {
+export type TWorkspaceOrderBy = TOrderBy | "name";
+export type TWorkspaceCreate = {
   name: string;
   user_id: string;
-}
+};
 
 export class WorkspaceRepository extends Repository {
-  public async getAll(page: number) {
-    return {
-      data: await this.client().workspace.findMany(),
-      pagination: {
-        page,
-      },
-    };
+  public async getAll(
+    page: number,
+    limit = 10,
+    order_by: TWorkspaceOrderBy = "createdAt",
+    order: TOrder = "desc",
+  ) {
+    const total = await this.client().workspace.count();
+    const data = await this.client().workspace.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { [order_by]: order },
+    });
+    return paginationResponse(data, total, page, limit);
   }
 
-  public async create({ name, user_id }: IWorkspaceCreate) {
+  public async create({ name, user_id }: TWorkspaceCreate) {
     return await this.client().workspace.create({
       data: { name, user_id },
     });
@@ -27,7 +36,7 @@ export class WorkspaceRepository extends Repository {
     });
   }
 
-  public async update(id: string, data: IWorkspaceCreate) {
+  public async update(id: string, data: TWorkspaceCreate) {
     return await this.client().workspace.update({
       where: { id },
       data,

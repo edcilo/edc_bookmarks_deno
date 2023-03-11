@@ -1,5 +1,6 @@
 import { RouterMiddleware } from "https://deno.land/x/oak@v12.1.0/mod.ts";
-import { WorkspaceRepository } from "/repositories/index.ts";
+import { TWorkspaceOrderBy, WorkspaceRepository } from "/repositories/index.ts";
+import { TOrder } from "/types/index.ts";
 
 export class WorkspaceController {
   private workspaceRepo: WorkspaceRepository;
@@ -9,9 +10,20 @@ export class WorkspaceController {
   }
 
   public getAll: RouterMiddleware<string> = async ({ response, request }) => {
-    const page = request.url.searchParams.get("page") || "1";
+    const qParams = request.url.searchParams;
+    const page = qParams.get("page") || "1";
+    const limit = qParams.get("limit") || "10";
+    const order_by =
+      (qParams.get("order_by") || "createdAt") as TWorkspaceOrderBy;
+    const order = (qParams.get("order") || "desc") as TOrder;
+
     response.status = 200;
-    response.body = await this.workspaceRepo.getAll(+page);
+    response.body = await this.workspaceRepo.getAll(
+      +page,
+      +limit,
+      order_by,
+      order,
+    );
   };
 
   public create: RouterMiddleware<string> = async (

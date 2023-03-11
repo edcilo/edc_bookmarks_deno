@@ -1,5 +1,5 @@
 import { RouterContext } from "https://deno.land/x/oak@v12.1.0/mod.ts";
-import { Schema } from "npm:joi@^17.8.3";
+import { TValidation } from "/validations/index.ts";
 
 interface IQueryParams {
   [key: string]: string;
@@ -8,11 +8,12 @@ interface IQueryParams {
 type TFrom = "body" | "query";
 
 export const validateMiddleware = async (
-  { request, response }: RouterContext<string>,
+  ctx: RouterContext<string>,
   next: () => Promise<unknown>,
-  schema: Schema,
+  schema: TValidation,
   from: TFrom = "body",
 ) => {
+  const { request, response } = ctx;
   let data: IQueryParams = {};
 
   if (from === "query") {
@@ -21,7 +22,7 @@ export const validateMiddleware = async (
     data = await request.body().value;
   }
 
-  const { error } = schema.validate(data);
+  const { error } = schema(ctx).validate(data);
 
   if (error) {
     response.status = 400;
